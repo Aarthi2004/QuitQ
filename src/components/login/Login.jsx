@@ -1,13 +1,13 @@
-import "./Login.css";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { loginAPICall } from "../../services/login.service";
-import { LoginModel } from "../../models/login.model";
-import { LoginErrorModel } from "../../models/loginerror.model";
+import { loginAPICall } from "./login.service";
+import { LoginModel } from "./login.model";
+import { LoginErrorModel } from "./loginerror.model";
+import "./Login.css";
 
-const Login = (props) => {
+const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState(new LoginModel());
     const [errors, setErrors] = useState(new LoginErrorModel());
@@ -16,8 +16,8 @@ const Login = (props) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUser((prev) => ({ ...prev, [name]: value }));
-        // Basic validation
-        if(name === "username" && value === "") {
+
+        if (name === "username" && value.trim() === "") {
             setErrors((prev) => ({ ...prev, username: "Username cannot be empty" }));
         } else {
             setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -26,19 +26,31 @@ const Login = (props) => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        if(errors.username.length > 0) return;
+        if (errors.username.length > 0) return;
+
         setIsLoading(true);
         loginAPICall(user)
             .then((response) => {
                 setIsLoading(false);
                 const data = response.data;
-                if(data && data.token) {
-                    sessionStorage.setItem("token", data.token);
-                    sessionStorage.setItem("username", data.username);
-                    toast.success("Login success");
-                    navigate("/");
+
+                if (data && data.token && data.role) {
+                    localStorage.setItem("authToken", data.token); 
+                    localStorage.setItem("username", data.username);
+                    localStorage.setItem("role", data.role);
+                    toast.success("Login successful");
+
+                    if (data.role === "Seller") {
+                        navigate("/seller-dashboard");
+                    } else if (data.role === "Admin") {
+                        navigate("/admin-dashboard");
+                    } else if (data.role === "Customer") {
+                        navigate("/customer-dashboard");
+                    } else {
+                        navigate("/");
+                    }
                 } else {
-                    toast.error("Invalid credentials");
+                    toast.error("Invalid credentials or missing role");
                 }
             })
             .catch((error) => {
@@ -56,46 +68,35 @@ const Login = (props) => {
                 </div>
             ) : (
                 <form onSubmit={handleLogin}>
-                    <div className="login_form">
-                        <input
-                            className="login_form_items"
-                            name="username"
-                            value={user.username}
-                            onChange={handleChange}
-                            type="text"
-                            placeholder="username"
-                            autoComplete="username"
-                        />
-                        {errors.username?.length > 0 && (
-                            <span className="alert alert-danger">{errors.username}</span>
-                        )}
-                        <input
-                            className="login_form_items"
-                            name="password"
-                            value={user.password}
-                            onChange={handleChange}
-                            type="password"
-                            placeholder="password"
-                            autoComplete="current-password"
-                        />
-                        <button className="login_form_items" type="submit">Log In!</button>
-                        <div className="lined">
-                            <div className="login_form_items">New User?</div>
-                            <button
-                                type="button"
-                                style={{ backgroundColor: "royalblue" }}
-                                className="login_form_items"
-                                onClick={props?.toggle}
-                            >
-                                Register
-                            </button>
-                            <div className="login_form_items">Forgot Password?</div>
-                            <button type="button" style={{ backgroundColor: "royalblue" }}>
-                                <Link to="/resetpassword" style={{ textDecoration: "none", color: "inherit" }}>
-                                    Forgot password
-                                </Link>
-                            </button>
-                        </div>
+                    <input
+                        name="username"
+                        value={user.username}
+                        onChange={handleChange}
+                        type="text"
+                        placeholder="username"
+                        autoComplete="username"
+                    />
+                    {errors.username?.length > 0 && (
+                        <span className="alert alert-danger">{errors.username}</span>
+                    )}
+                    <input
+                        name="password"
+                        value={user.password}
+                        onChange={handleChange}
+                        type="password"
+                        placeholder="password"
+                        autoComplete="current-password"
+                    />
+                    <button type="submit">Log In!</button>
+                    <div className="lined">
+                        <div>New User?</div>
+                        <Link to="/register">
+                            <button type="button" className="btn-link">Register</button>
+                        </Link>
+                        <div>Forgot Password?</div>
+                        <Link to="/resetpassword">
+                            <button type="button" className="btn-link">Forgot password</button>
+                        </Link>
                     </div>
                 </form>
             )}

@@ -1,0 +1,145 @@
+/* Container for the entire registration page */
+.main_registration_container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #007BFF 30%, #5f2edd 100%);
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    padding: 20px;
+}
+
+/* Form container that acts as the "window" */
+form {
+    background-color: #ffffff;
+    padding: 50px 60px; /* Increased padding for a spacious feel */
+    border-radius: 24px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form title styling */
+.form_title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Two-column layout for form fields */
+.form_row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px; /* Spacing between columns and rows */
+    margin-bottom: 10px;
+}
+
+.form_group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Label styling */
+label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Input and select styles */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+input[type="tel"],
+select {
+    padding: 14px 18px;
+    border: 1px solid #d4d8de;
+    border-radius: 12px;
+    font-size: 16px;
+    background: #fafbfc;
+    color: #333;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input::placeholder {
+    color: #a0a0a0;
+    opacity: 1;
+}
+
+input:focus,
+select:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+    outline: none;
+    background-color: #fff;
+}
+
+/* Button style */
+button[type="submit"] {
+    background: linear-gradient(90deg, #007BFF 0%, #5f2edd 100%);
+    color: #fff;
+    border: none;
+    padding: 16px 0;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 18px;
+    margin-top: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    letter-spacing: 0.5px;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.25);
+}
+
+/* Loading image */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading img {
+    width: 80px;
+    height: 80px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Toast styling */
+.Toastify__toast-container {
+    font-size: 15px;
+}
+
+/* Responsive adjustments for a single column on small screens */
+@media (max-width: 768px) {
+    .form_row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    form {
+        padding: 40px 30px;
+    }
+}
