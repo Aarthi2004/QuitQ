@@ -1,132 +1,134 @@
 :root {
-    --dark-bg: #1e1e2d;
-    --dark-card-bg: #27293d;
-    --text-color: #d1d1e0;
-    --accent-blue: #007bff;
-    --accent-green: #28a745;
-    --accent-red: #dc3545;
-    --accent-yellow: #ffc107;
-    --sidebar-width: 250px;
-    --border-radius: 8px;
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --dark-bg: #1e1e2d;
+  --dark-card-bg: #27293d;
+  --text-color: #d1d1e0;
+  --accent-blue: #007bff;
+  --accent-green: #28a745;
+  --accent-red: #dc3545;
+  --accent-yellow: #ffc107;
+  --sidebar-width: 250px;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
 }
 
 .admin-dashboard {
-    display: flex;
-    min-height: 100vh;
-    color: var(--text-color);
+  display: flex;
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--text-color);
 }
 
-/* --- Sidebar --- */
 .sidebar {
-    width: var(--sidebar-width);
-    background-color: var(--dark-bg);
-    padding: 2rem 1.5rem;
-    box-shadow: var(--box-shadow);
-    display: flex;
-    flex-direction: column;
+  width: var(--sidebar-width);
+  background-color: var(--dark-bg);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ffffff;
-    text-align: center;
-    margin-bottom: 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .sidebar nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .sidebar nav ul li {
-    display: flex;
-    align-items: center;
-    padding: 1rem 1.2rem;
-    margin-bottom: 0.5rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .sidebar nav ul li:hover {
-    background-color: #383a54;
-    color: #ffffff;
+  background-color: #383a54;
+  color: #ffffff;
 }
 
 .sidebar nav ul li.active {
-    background-color: var(--accent-blue);
-    color: #ffffff;
-    font-weight: bold;
+  background-color: var(--accent-blue);
+  color: #ffffff;
+  font-weight: bold;
 }
 
 .sidebar nav ul li svg {
-    margin-right: 1rem;
-    font-size: 1.2rem;
+  margin-right: 1rem;
+  font-size: 1.2rem;
 }
 
-/* --- Main Content Area --- */
 .main-content {
-    flex-grow: 1;
-    background-color: #f0f2f5;
-    padding: 2rem;
-    color: #333; /* Added for dark text on light background */
+  flex-grow: 1;
+  background-color: #f0f2f5;
+  padding: 2rem;
+  color: #333;
+  overflow-y: auto;
 }
 
 .main-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .main-header h1 {
-    font-size: 2rem;
-    color: #333; /* Ensures this title is dark */
-    margin: 0;
+  font-size: 2rem;
+  color: #333;
+  margin: 0;
 }
 
 .content-area {
-    background-color: #ffffff;
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    color: #333; /* Added for dark text on white card background */
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #333;
 }
 
-/* --- Dashboard Grid & Stat Cards --- */
 .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
 .stat-card {
-    background-color: var(--dark-card-bg);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s ease;
+  background-color: var(--dark-card-bg);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
 .stat-card .icon {
-    margin-bottom: 1rem;
-    color: var(--accent-blue);
+  margin-bottom: 1rem;
+  color: var(--accent-blue);
 }
 
 .stat-card:nth-child(2) .icon { color: var(--accent-green); }
@@ -134,106 +136,161 @@ body {
 .stat-card:nth-child(4) .icon { color: var(--accent-red); }
 
 .stat-card h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1.2rem;
-    color: var(--text-color);
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  color: var(--text-color);
 }
 
 .stat-card p {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 0;
-    color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #ffffff;
 }
 
-/* General styles for management tables */
 .management-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
 }
 
 .management-table th, .management-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
-    color: #333; /* Ensures all table text is dark */
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
 }
 
 .management-table th {
-    background-color: #f8f9fa;
-    color: #333; /* Ensures table headers are dark */
-    font-weight: 600;
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
 }
 
 .management-table tr:hover {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 .action-buttons {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .action-buttons button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
 .edit-btn {
-    background-color: var(--accent-blue);
-    color: white;
+  background-color: var(--accent-blue);
+  color: white;
 }
 .edit-btn:hover { background-color: #0056b3; }
 
 .delete-btn {
-    background-color: var(--accent-red);
-    color: white;
+  background-color: var(--accent-red);
+  color: white;
 }
 .delete-btn:hover { background-color: #c82333; }
 
-/* /src/components/admin/AdminDashboard.css */
-
-/* ... (Keep all existing styles for sidebar, main content, etc.) ... */
-
-/* Add this section to the bottom of the file */
 .logout-section {
-    padding: 20px;
-    border-top: 1px solid #444; /* A subtle separator line */
-    margin-top: auto; /* Push the logout button to the bottom */
+  padding: 20px;
+  border-top: 1px solid #444; 
+  margin-top: auto; 
 }
 
 .logout-btn {
-    width: 100%;
-    background-color: #dc3545; /* A standard 'danger' color for a clear action */
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .logout-btn:hover {
-    background-color: #c82333;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .logout-btn:active {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 .logout-icon {
-    font-size: 1.2em;
+  font-size: 1.2em;
+}
+
+.manage-form-container {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.manage-form-container h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: var(--dark-bg);
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.manage-form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.manage-form input,
+.manage-form select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1em;
+  color: #495057;
+}
+
+.manage-form button.add-btn {
+  background-color: var(--accent-green);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.manage-form button.add-btn:hover {
+  background-color: #218838;
+}
+
+@media (max-width: 768px) {
+  .manage-form {
+    flex-direction: column;
+  }
+  .manage-form input,
+  .manage-form select,
+  .manage-form button {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
 }

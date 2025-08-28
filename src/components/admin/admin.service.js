@@ -1,14 +1,13 @@
 // /src/components/admin/admin.service.js
 
-// Remove the unused import
-// import getAxiosInstance from '../../services/axiosConfig';
+import axios from 'axios';
 
 class AdminDashboardService {
     constructor(apiClient) {
-        // Now using the apiClient passed from the component
         this.apiClient = apiClient;
     }
 
+    // User Management
     async getUsers() {
         return this.apiClient.get('api/users');
     }
@@ -17,6 +16,7 @@ class AdminDashboardService {
         return this.apiClient.delete(`api/users/${userId}`);
     }
 
+    // Product Management
     async getProducts() {
         return this.apiClient.get('api/products');
     }
@@ -25,16 +25,29 @@ class AdminDashboardService {
         return this.apiClient.delete(`api/products/${productId}`);
     }
 
-    async getStores() {
+    // Store Management
+     async getStores() {
         return this.apiClient.get('api/stores');
     }
-    
+
+    async postStore(storeData) {
+        return this.apiClient.post('api/stores', storeData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
     async deleteStore(storeId) {
         return this.apiClient.delete(`api/stores/${storeId}`);
     }
 
+
+    // Category & Subcategory Management
     async getCategories() {
         return this.apiClient.get('api/categories');
+    }
+    
+    async postCategory(categoryName) {
+        return this.apiClient.post('api/categories', { categoryName });
     }
     
     async deleteCategory(categoryId) {
@@ -45,6 +58,20 @@ class AdminDashboardService {
         return this.apiClient.get('api/subcategories');
     }
 
+    async postSubcategory(subCategoryData) {
+        return this.apiClient.post('api/subcategories', subCategoryData);
+    }
+
+    async deleteSubcategory(subcategoryId) {
+        return this.apiClient.delete(`api/subcategories/${subcategoryId}`);
+    }
+
+    // Brand Management
+    async postBrand(brandData) {
+        return this.apiClient.post('api/brands', brandData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
     async getBrands() {
         return this.apiClient.get('api/brands');
     }
@@ -53,6 +80,7 @@ class AdminDashboardService {
         return this.apiClient.delete(`api/brands/${brandId}`);
     }
 
+    // Location Management
     async getStates() {
         return this.apiClient.get('api/states');
     }
@@ -69,6 +97,7 @@ class AdminDashboardService {
         return this.apiClient.delete(`api/cities/${cityId}`);
     }
 
+    // Gender Management
     async getGenders() {
         return this.apiClient.get('api/genders');
     }
@@ -77,6 +106,7 @@ class AdminDashboardService {
         return this.apiClient.delete(`api/genders/${genderId}`);
     }
 
+    // Order & Shipment Management
     async getAllOrders() {
         return this.apiClient.get('/api/order/all');
     }
@@ -85,7 +115,6 @@ class AdminDashboardService {
         return this.apiClient.get(`/api/order/store/${storeId}`);
     }
 
-    // --- NEW SHIPPER SERVICE METHODS ---
     async getShippers() {
         return this.apiClient.get('/api/shipment/all');
     }

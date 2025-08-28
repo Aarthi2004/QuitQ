@@ -5,7 +5,7 @@ const ManageUsers = ({ adminService }) => {
     const [loading, setLoading] = useState(true);
     const [selectedUser, setSelectedUser] = useState(null);
 
-    const roleMap = { 1: "Admin", 2: "Manager", 3: "User" };
+    const roleMap = { 1: "Admin", 2: "Seller", 3: "User" };
     const genderMap = { 1: "Male", 2: "Female", 3: "Other" };
     const statusMap = { 1: "Active", 2: "Inactive", 3: "Banned" };
 

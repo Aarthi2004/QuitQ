@@ -1,35 +1,53 @@
 import React, { useState, useEffect } from 'react';
+import '../AdminDashboard.css';
 
 const ManageProducts = ({ adminService }) => {
     const [products, setProducts] = useState([]);
+    const [stores, setStores] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        fetchData();
+    }, [adminService]);
 
-    const fetchProducts = async () => {
+    const fetchData = async () => {
+        setLoading(true);
         try {
-            const response = await adminService.getProducts();
-            if (Array.isArray(response.data)) {
-                setProducts(response.data);
-            } else {
-                console.error("API response for products is not an array:", response.data);
-                setProducts([]);
+            const [productsResponse, storesResponse, brandsResponse, categoriesResponse] = await Promise.allSettled([
+                adminService.getProducts(),
+                adminService.getStores(),
+                adminService.getBrands(),
+                adminService.getCategories(),
+            ]);
+
+            if (productsResponse.status === 'fulfilled' && Array.isArray(productsResponse.value.data)) {
+                setProducts(productsResponse.value.data);
             }
-            setLoading(false);
+            if (storesResponse.status === 'fulfilled' && Array.isArray(storesResponse.value.data)) {
+                setStores(storesResponse.value.data);
+            }
+            if (brandsResponse.status === 'fulfilled' && Array.isArray(brandsResponse.value.data)) {
+                setBrands(brandsResponse.value.data);
+            }
+            if (categoriesResponse.status === 'fulfilled' && Array.isArray(categoriesResponse.value.data)) {
+                setCategories(categoriesResponse.value.data);
+            }
+
         } catch (error) {
-            console.error("Failed to fetch products:", error);
+            console.error("Failed to fetch product data:", error);
+        } finally {
             setLoading(false);
         }
     };
-
-    const handleDelete = async (productId) => {
+    
+    const handleDeleteProduct = async (productId) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
                 await adminService.deleteProduct(productId);
                 alert('Product deleted successfully!');
-                fetchProducts();
+                fetchData();
             } catch (error) {
                 console.error("Failed to delete product:", error);
                 alert('Failed to delete product.');
@@ -37,12 +55,19 @@ const ManageProducts = ({ adminService }) => {
         }
     };
 
+    const getEntityNameById = (list, id, key, nameKey) => {
+        const entity = list.find(item => item[key] == id);
+        return entity ? entity[nameKey] : "Unknown";
+    };
+
     if (loading) {
-        return <div>Loading products...</div>;
+        return <div className="loading-message">Loading products...</div>;
     }
 
     return (
         <div className="manage-section">
+            <h1>Manage Products</h1>
+            
             <h2>Product List</h2>
             <table className="management-table">
                 <thead>
@@ -50,7 +75,10 @@ const ManageProducts = ({ adminService }) => {
                         <th>ID</th>
                         <th>Name</th>
                         <th>Price</th>
+                        <th>Quantity</th>
                         <th>Store</th>
+                        <th>Category</th>
+                        <th>Brand</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -59,11 +87,14 @@ const ManageProducts = ({ adminService }) => {
                         <tr key={product.productId}>
                             <td>{product.productId}</td>
                             <td>{product.productName}</td>
-                            <td>${product.price.toFixed(2)}</td>
-                            <td>{product.storeName}</td>
+                            <td>${product.price}</td>
+                            <td>{product.quantity}</td>
+                            <td>{getEntityNameById(stores, product.storeId, 'storeId', 'storeName')}</td>
+                            <td>{getEntityNameById(categories, product.categoryId, 'categoryId', 'categoryName')}</td>
+                            <td>{getEntityNameById(brands, product.brandId, 'brandId', 'brandName')}</td>
                             <td className="action-buttons">
                                 <button className="edit-btn">Edit</button>
-                                <button className="delete-btn" onClick={() => handleDelete(product.productId)}>Delete</button>
+                                <button className="delete-btn" onClick={() => handleDeleteProduct(product.productId)}>Delete</button>
                             </td>
                         </tr>
                     ))}

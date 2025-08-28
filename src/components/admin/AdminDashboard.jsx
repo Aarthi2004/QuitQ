@@ -92,8 +92,8 @@ const AdminDashboard = () => {
                 return <ManageUsers adminService={adminService} />;
             case 'products':
                 return <ManageProducts adminService={adminService} />;
-            case 'stores':
-                return <ManageStores adminService={adminService} />;
+             case 'stores':
+                 return <ManageStores adminService={adminService} />;
             case 'categories':
                 return <ManageCategories adminService={adminService} />;
             case 'brands':
