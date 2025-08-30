@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../AdminDashboard.css';
+import '../AdminDashboard.css'; // Corrected file path
 
 const ManageCategories = ({ adminService }) => {
     const [categories, setCategories] = useState([]);

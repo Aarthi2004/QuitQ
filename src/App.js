@@ -4,7 +4,9 @@ import Login from "./components/login/Login";
 import Registration from "./components/registration/Registration";
 import SellerDashboard from "./components/seller/SellerDashboard";
 import AdminDashboard from "./components/admin/AdminDashboard";
-import CustomerDashboard from "./components/customer/CustomerDashboard";
+import CustomerRoutes from "./components/customer/CustomerRoutes";
+
+const AdminLayout = ({ children }) => children;
 
 function App() {
   return (
@@ -12,9 +14,14 @@ function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Registration />} />
+
       <Route path="/seller-dashboard" element={<SellerDashboard />} />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+
+      <Route path="/admin-dashboard/*" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
+
+      <Route path="/customer/*" element={<CustomerRoutes />} />
+
+      <Route path="*" element={<Navigate to="/customer/" replace />} />
     </Routes>
   );
 }
