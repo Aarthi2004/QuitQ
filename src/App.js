@@ -15,7 +15,11 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Registration />} />
 
-      <Route path="/seller-dashboard" element={<SellerDashboard />} />
+      {/* IMPORTANT CHANGE: Added a "/*" to the path.
+        This allows the SellerDashboard component to handle its own nested routes 
+        (like /products, /orders, etc.).
+      */}
+      <Route path="/seller-dashboard/*" element={<SellerDashboard />} />
 
       <Route path="/admin-dashboard/*" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
 

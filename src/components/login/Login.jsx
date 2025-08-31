@@ -34,10 +34,16 @@ const Login = () => {
                 setIsLoading(false);
                 const data = response.data;
 
-                if (data && data.token && data.role) {
+                // Check if the response from the backend includes the userId
+                if (data && data.token && data.role && data.userId) {
                     localStorage.setItem("authToken", data.token); 
                     localStorage.setItem("username", data.username);
                     localStorage.setItem("role", data.role);
+                    
+                    // --- THIS IS THE NEW, REQUIRED LINE ---
+                    localStorage.setItem("userId", data.userId); 
+                    // ------------------------------------
+
                     toast.success("Login successful");
 
                     if (data.role === "Seller") {
@@ -45,12 +51,13 @@ const Login = () => {
                     } else if (data.role === "Admin") {
                         navigate("/admin-dashboard");
                     } else if (data.role === "Customer") {
-                        navigate("/customer-dashboard");
+                        // Your App.js uses "/customer/*", so navigating to the base path is correct.
+                        navigate("/customer");
                     } else {
                         navigate("/");
                     }
                 } else {
-                    toast.error("Invalid credentials or missing role");
+                    toast.error("Invalid credentials or user data from server is incomplete.");
                 }
             })
             .catch((error) => {

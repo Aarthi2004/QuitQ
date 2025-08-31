@@ -1,39 +1,45 @@
 import React, { useState, useEffect, useContext } from 'react';
-import '../dashboard/CustomerDashboard.css';
+import '../dashboard/CustomerDashboard.css'; // Corrected Path
 import { CustomerServiceContext } from '../customer.context';
 import { useNavigate } from 'react-router-dom';
 
 const BACKEND_BASE_URL = 'http://localhost:5193';
-const CURRENT_USER_ID = 8;
 
 const Cart = () => {
     const customerService = useContext(CustomerServiceContext);
     const navigate = useNavigate();
+    
+    // Get the dynamic userId from localStorage
+    const userId = localStorage.getItem("userId");
+
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!customerService) return;
+        
+        const fetchCart = async () => {
+            try {
+                // The backend identifies the user via the JWT token for getting the cart
+                const response = await customerService.getCart();
+                setCartItems(response.data || []);
+            } catch (err) {
+                setError("Failed to fetch cart. Please log in.");
+                console.error("Failed to fetch cart:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchCart();
     }, [customerService]);
-
-    const fetchCart = async () => {
-        try {
-            const response = await customerService.getCart();
-            setCartItems(response.data || []);
-        } catch (err) {
-            setError("Failed to fetch cart. Please log in.");
-            console.error("Failed to fetch cart:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleIncreaseQuantity = async (cartId) => {
         try {
             await customerService.increaseQuantity(cartId);
-            fetchCart();
+            const response = await customerService.getCart();
+            setCartItems(response.data || []);
         } catch (error) {
             console.error("Failed to increase quantity:", error);
             alert('Failed to increase quantity.');
@@ -43,7 +49,8 @@ const Cart = () => {
     const handleDecreaseQuantity = async (cartId) => {
         try {
             await customerService.decreaseQuantity(cartId);
-            fetchCart();
+            const response = await customerService.getCart();
+            setCartItems(response.data || []);
         } catch (error) {
             console.error("Failed to decrease quantity:", error);
             alert('Failed to decrease quantity.');
@@ -53,7 +60,8 @@ const Cart = () => {
     const handleRemoveFromCart = async (cartId) => {
         try {
             await customerService.deleteCartItem(cartId);
-            fetchCart();
+            const response = await customerService.getCart();
+            setCartItems(response.data || []);
             alert('Product removed from cart.');
         } catch (error) {
             console.error("Failed to remove from cart:", error);
@@ -62,10 +70,15 @@ const Cart = () => {
     };
     
     const handlePlaceOrder = async () => {
+        if (!userId) {
+            alert("You must be logged in to place an order.");
+            return;
+        }
         try {
-            await customerService.placeOrder({ userId: CURRENT_USER_ID });
+            // Use the dynamic userId when placing the order
+            await customerService.placeOrder({ userId: userId });
             alert('Order placed successfully!');
-            navigate('orders');
+            navigate('/customer/orders');
         } catch (error) {
             console.error("Failed to place order:", error);
             alert('Failed to place order.');
