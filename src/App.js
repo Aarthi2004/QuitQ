@@ -5,24 +5,26 @@ import Registration from "./components/registration/Registration";
 import SellerDashboard from "./components/seller/SellerDashboard";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import CustomerRoutes from "./components/customer/CustomerRoutes";
-// --- NEW IMPORT ---
 import ResetPassword from "./components/reset_password/ResetPassword";
+import HomePage from "./components/home/HomePage"; // <-- IMPORT THE NEW HOME PAGE
 
 const AdminLayout = ({ children }) => children;
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      {/* --- THIS IS THE KEY CHANGE --- */}
+      <Route path="/" element={<HomePage />} /> 
+
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Registration />} />
-      
-      {/* --- NEW ROUTE ADDED --- */}
       <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route path="/seller-dashboard/*" element={<SellerDashboard />} />
       <Route path="/admin-dashboard/*" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
       <Route path="/customer/*" element={<CustomerRoutes />} />
+      
+      {/* Optional: You can keep this or remove it. If a user tries an invalid path while logged in, it will redirect them to their dashboard. */}
       <Route path="*" element={<Navigate to="/customer/" replace />} />
     </Routes>
   );
