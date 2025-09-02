@@ -1,71 +1,57 @@
+// src/components/customer/cart/Cart.js
+
 import React, { useState, useEffect, useContext } from 'react';
-import '../dashboard/CustomerDashboard.css'; // Corrected Path
+import './Cart.css'; // Your dedicated CSS file
 import { CustomerServiceContext } from '../customer.context';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const BACKEND_BASE_URL = 'http://localhost:5193';
 
 const Cart = () => {
     const customerService = useContext(CustomerServiceContext);
     const navigate = useNavigate();
-    
-    // Get the dynamic userId from localStorage
     const userId = localStorage.getItem("userId");
 
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
+    const fetchCart = async () => {
         if (!customerService) return;
-        
-        const fetchCart = async () => {
-            try {
-                // The backend identifies the user via the JWT token for getting the cart
-                const response = await customerService.getCart();
-                setCartItems(response.data || []);
-            } catch (err) {
-                setError("Failed to fetch cart. Please log in.");
-                console.error("Failed to fetch cart:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
+        setLoading(true);
+        try {
+            const response = await customerService.getCart();
+            setCartItems(response.data || []);
+        } catch (err) {
+            setError("Failed to fetch cart. Please log in.");
+            console.error("Failed to fetch cart:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    useEffect(() => {
         fetchCart();
     }, [customerService]);
 
-    const handleIncreaseQuantity = async (cartId) => {
+    const handleQuantityChange = async (cartId, action) => {
         try {
-            await customerService.increaseQuantity(cartId);
-            const response = await customerService.getCart();
-            setCartItems(response.data || []);
+            const apiCall = action === 'increase' ? customerService.increaseQuantity : customerService.decreaseQuantity;
+            await apiCall(cartId);
+            fetchCart();
         } catch (error) {
-            console.error("Failed to increase quantity:", error);
-            alert('Failed to increase quantity.');
-        }
-    };
-
-    const handleDecreaseQuantity = async (cartId) => {
-        try {
-            await customerService.decreaseQuantity(cartId);
-            const response = await customerService.getCart();
-            setCartItems(response.data || []);
-        } catch (error) {
-            console.error("Failed to decrease quantity:", error);
-            alert('Failed to decrease quantity.');
+            console.error(`Failed to change quantity:`, error);
         }
     };
 
     const handleRemoveFromCart = async (cartId) => {
         try {
             await customerService.deleteCartItem(cartId);
-            const response = await customerService.getCart();
-            setCartItems(response.data || []);
-            alert('Product removed from cart.');
+            fetchCart();
         } catch (error) {
             console.error("Failed to remove from cart:", error);
-            alert('Failed to remove from cart.');
         }
     };
     
@@ -75,8 +61,7 @@ const Cart = () => {
             return;
         }
         try {
-            // Use the dynamic userId when placing the order
-            await customerService.placeOrder({ userId: userId });
+            await customerService.placeOrder({ userId: parseInt(userId), paymentMethod: 'COD' });
             alert('Order placed successfully!');
             navigate('/customer/orders');
         } catch (error) {
@@ -86,47 +71,64 @@ const Cart = () => {
     };
 
     const calculateTotal = () => {
+        // FIX: Use productPrice for calculation
         return cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0).toFixed(2);
     };
 
-    if (loading) return <div className="loading-state">Loading cart...</div>;
+    if (loading) return <div className="loading-state">Loading Cart...</div>;
     if (error) return <div className="error-state">{error}</div>;
 
     return (
-        <section className="page-section">
-            <h2 className="section-title">Your Shopping Cart</h2>
-            {cartItems.length > 0 ? (
-                <div className="section-container">
-                    <div className="section-content">
+        <div className="page-container cart-page">
+            <h1 className="page-title">Your Shopping Cart</h1>
+            {cartItems.length === 0 ? (
+                <div className="empty-state">Your cart is currently empty.</div>
+            ) : (
+                <div className="cart-layout">
+                    <div className="cart-items-list">
                         {cartItems.map(item => (
-                            <div className="item-card" key={item.cartId}>
+                            <div key={item.cartId} className="item-card">
+                                <img src={`${BACKEND_BASE_URL}${item.productImage}`} alt={item.productName} className="item-image" />
                                 <div className="item-details">
-                                    <img src={`${BACKEND_BASE_URL}${item.productImage}`} alt={item.productName} className="item-image" />
-                                    <div className="item-info">
-                                        <h3>{item.productName}</h3>
-                                        <p>Price: ${item.productPrice.toFixed(2)}</p>
+                                    {/* FIX: Use productName */}
+                                    <h3 className="item-name">{item.productName}</h3>
+                                    {/* FIX: Use productPrice */}
+                                    <p className="item-price">${item.productPrice?.toFixed(2)}</p>
+                                    <div className="quantity-controls">
+                                        <button onClick={() => handleQuantityChange(item.cartId, 'decrease')}><FontAwesomeIcon icon={faMinus} /></button>
+                                        <span>{item.quantity}</span>
+                                        <button onClick={() => handleQuantityChange(item.cartId, 'increase')}><FontAwesomeIcon icon={faPlus} /></button>
                                     </div>
                                 </div>
                                 <div className="item-actions">
-                                    <div className="quantity-controls">
-                                        <button onClick={() => handleDecreaseQuantity(item.cartId)}>-</button>
-                                        <span>{item.quantity}</span>
-                                        <button onClick={() => handleIncreaseQuantity(item.cartId)}>+</button>
-                                    </div>
-                                    <button className="remove-btn" onClick={() => handleRemoveFromCart(item.cartId)}>Remove</button>
+                                     {/* FIX: Use productPrice */}
+                                    <p className="item-subtotal">${(item.productPrice * item.quantity).toFixed(2)}</p>
+                                    <button className="remove-btn icon-btn" title="Remove Item" onClick={() => handleRemoveFromCart(item.cartId)}>
+                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                    </button>
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <div className="checkout-area">
-                        <h3 className="cart-total-price">Total: ${calculateTotal()}</h3>
-                        <button className="checkout-btn" onClick={handlePlaceOrder}>Checkout</button>
-                    </div>
+                    <aside className="order-summary-card">
+                        <h2>Order Summary</h2>
+                        <div className="summary-row">
+                            <span>Subtotal</span>
+                            <span>${calculateTotal()}</span>
+                        </div>
+                        <div className="summary-row">
+                            <span>Shipping</span>
+                            <span>FREE</span>
+                        </div>
+                        <div className="summary-total">
+                            <span>Total</span>
+                            <span>${calculateTotal()}</span>
+                        </div>
+                        <button className="checkout-btn" onClick={handlePlaceOrder}>Proceed to Checkout</button>
+                    </aside>
                 </div>
-            ) : (
-                <div className="empty-state">Your cart is empty.</div>
             )}
-        </section>
+        </div>
     );
 };
 

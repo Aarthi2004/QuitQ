@@ -51,6 +51,13 @@ class SellerService {
     async getBrands() {
         return this.apiClient.get('/api/brands');
     }
+  
+    // Inside your SellerService class
+
+// This is the missing function based on your provided Swagger UI.
+    async getSubcategoriesByCategoryId(categoryId) {
+        return this.apiClient.get(`/api/categories/${categoryId}/subcategories`);
+    }
 }
 
 export default SellerService;

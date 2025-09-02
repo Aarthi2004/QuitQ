@@ -2,15 +2,15 @@
 :root {
   --seller-primary: #2c3e50; /* Midnight Blue */
   --seller-accent: #3498db;  /* Peter River */
-  --seller-bg: #f4f7f9;      /* Lighter background */
+  --seller-bg: #f4f7f9;     /* Lighter background */
   --seller-card-bg: #ffffff;
-  --seller-text: #34495e;    /* Wet Asphalt */
+  --seller-text: #34495e;   /* Wet Asphalt */
   --seller-text-light: #95a5a6; /* Asbestos */
-  --seller-border: #e1e5e8;  /* Lighter border */
+  --seller-border: #e1e5e8; /* Lighter border */
   --seller-shadow: rgba(44, 62, 80, 0.08);
   --seller-success: #2ecc71;  /* Emerald */
   --seller-warning: #f1c40f;  /* Sun Flower */
-  --seller-danger: #e74c3c;   /* Alizarin */
+  --seller-danger: #e74c3c;  /* Alizarin */
   --font-family: 'Poppins', sans-serif; /* Modern Font */
   --border-radius: 10px;
 }
@@ -73,18 +73,27 @@
 /* --- Page Header & Cards --- */
 .page-header { margin-bottom: 2rem; }
 .page-title { font-size: 2.2rem; color: var(--seller-text); font-weight: 700; }
-.seller-card { background-color: var(--seller-card-bg); border-radius: var(--border-radius); padding: 1.5rem 2rem; box-shadow: 0 5px 20px var(--seller-shadow); margin-bottom: 1.5rem; border: 1px solid var(--seller-border); }
+.seller-card { 
+  background-color: var(--seller-card-bg); 
+  border-radius: var(--border-radius); 
+  padding: 1.5rem 2rem; 
+  box-shadow: 0 5px 20px var(--seller-shadow); 
+  margin-bottom: 1.5rem; 
+  border: 1px solid var(--seller-border); 
+  position: relative;
+}
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--seller-border); }
 .card-title { font-size: 1.3rem; font-weight: 600; color: var(--seller-primary); margin: 0; }
 
 /* --- Forms & Tables --- */
 .product-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 2rem; background-color: var(--seller-bg); border-radius: var(--border-radius); margin-top: 1rem; }
+.product-form-container { position: relative; }
 .form-group { display: flex; flex-direction: column; }
 .form-group.full-width { grid-column: 1 / -1; }
 .form-group label { font-weight: 600; margin-bottom: 0.5rem; color: var(--seller-text); }
 .form-input, .form-select { width: 100%; padding: 0.9rem 1rem; border: 1px solid var(--seller-border); border-radius: var(--border-radius); font-size: 1rem; font-family: var(--font-family); transition: all 0.2s ease; }
 .form-input:focus, .form-select:focus { outline: none; border-color: var(--seller-accent); box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); }
-.form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; }
+.form-actions-centered { grid-column: 1 / -1; display: flex; justify-content: center; margin-top: 1rem; }
 .form-file-input-wrapper { position: relative; overflow: hidden; display: inline-block; cursor: pointer; width: 100%; }
 .form-file-input { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
 .form-file-input-label { display: block; padding: 0.9rem 1rem; border: 1px dashed var(--seller-border); border-radius: var(--border-radius); background-color: #fff; text-align: center; color: var(--seller-text-light); transition: all 0.2s ease; }
@@ -126,3 +135,30 @@
 .stats-card-info h4 { margin: 0 0 0.25rem; font-size: 1rem; color: var(--seller-text-light); }
 .stats-card-info p { margin: 0; font-size: 2rem; font-weight: 700; color: var(--seller-text); }
 .loading-state, .error-state, .empty-state { text-align: center; padding: 4rem; font-size: 1.2rem; color: var(--seller-text-light); }
+
+/* New styles for cross icon and centered button */
+.product-form-container {
+  position: relative; /* This is the key to positioning the close button */
+  background-color: var(--seller-card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 5px 20px var(--seller-shadow);
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--seller-border);
+}
+
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--seller-text-light);
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: var(--seller-danger);
+}

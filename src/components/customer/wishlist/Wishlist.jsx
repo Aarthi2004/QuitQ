@@ -1,81 +1,89 @@
+// src/components/customer/wishlist/Wishlist.js
+
 import React, { useState, useEffect, useContext } from 'react';
-import '../dashboard/CustomerDashboard.css';
+import './Wishlist.css'; // Your dedicated CSS file
 import { CustomerServiceContext } from '../customer.context';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt, faCartPlus } from '@fortawesome/free-solid-svg-icons';
 
 const BACKEND_BASE_URL = 'http://localhost:5193';
 
 const Wishlist = () => {
     const customerService = useContext(CustomerServiceContext);
-    const [wishlist, setWishlist] = useState([]);
+    const [wishlistItems, setWishlistItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if (!customerService) {
-            setError("Service not available. Please log in.");
-            setLoading(false);
-            return;
-        }
-        fetchWishlist();
-    }, [customerService]);
-
     const fetchWishlist = async () => {
+        if (!customerService) return;
         try {
             const response = await customerService.getWishlist();
-            setWishlist(response.data || []);
+            setWishlistItems(response.data || []);
         } catch (err) {
             setError("Failed to fetch wishlist. Please try again later.");
-            console.error("Failed to fetch wishlist:", err);
         } finally {
             setLoading(false);
         }
     };
 
+    useEffect(() => {
+        fetchWishlist();
+    }, [customerService]);
+
     const handleRemoveFromWishlist = async (productId) => {
         try {
             await customerService.deleteWishlistItem(productId);
             fetchWishlist();
-            alert('Product removed from wishlist.');
         } catch (error) {
             console.error("Failed to remove from wishlist:", error);
-            alert('Failed to remove from wishlist.');
         }
     };
 
-    if (loading) return <div className="loading-state">Loading wishlist...</div>;
+    const handleAddToCart = async (productId) => {
+        try {
+            await customerService.addToCart({ productId, quantity: 1 });
+            window.dispatchEvent(new Event('cartUpdated'));
+            await handleRemoveFromWishlist(productId);
+        } catch (error) {
+            console.error("Failed to add to cart:", error);
+        }
+    };
+
+    if (loading) return <div className="loading-state">Loading Your Wishlist...</div>;
     if (error) return <div className="error-state">{error}</div>;
 
     return (
-        <section className="page-section">
-            <h2 className="section-title">Your Wishlist</h2>
-            {wishlist.length > 0 ? (
-                <div className="section-container">
-                    <div className="section-content">
-                        {wishlist.map(item => (
-                            <div className="item-card" key={item.wishlistId}> {/* <-- The key prop is here */}
-                                <div className="item-details">
-                                    {item.product && (
-                                        <img 
-                                            src={`${BACKEND_BASE_URL}${item.product.productImage}`} 
-                                            alt={item.product.productName} 
-                                            className="item-image" 
-                                        />
-                                    )}
-                                    <div className="item-info">
-                                        <h3>{item.product?.productName}</h3>
-                                    </div>
-                                </div>
-                                <div className="item-actions">
-                                    <button className="remove-btn" onClick={() => handleRemoveFromWishlist(item.productId)}>Remove</button>
+        <div className="page-container wishlist-page">
+            <h1 className="page-title">Your Wishlist</h1>
+            {wishlistItems.length === 0 ? (
+                <div className="empty-state">Your wishlist is empty. Explore products to add items!</div>
+            ) : (
+                <div className="wishlist-grid">
+                    {wishlistItems.map(item => (
+                        <div key={item.wishListId} className="product-card wishlist-item-card">
+                             <div className="product-card-image-container">
+                                {/* FIX: Access nested product object */}
+                                <img src={`${BACKEND_BASE_URL}${item.product?.productImage}`} alt={item.product?.productName} className="product-image" />
+                            </div>
+                            <div className="product-details">
+                                {/* FIX: Access nested product object */}
+                                <h3 className="product-name">{item.product?.productName}</h3>
+                                {/* FIX: Access nested product object and safely call toFixed */}
+                                <p className="product-price">${item.product?.price?.toFixed(2)}</p>
+                                <div className="wishlist-actions">
+                                    <button className="wishlist-action-btn add-to-cart-btn" onClick={() => handleAddToCart(item.productId)}>
+                                        <FontAwesomeIcon icon={faCartPlus} /> Add to Cart
+                                    </button>
+                                    <button className="wishlist-action-btn remove-btn" onClick={() => handleRemoveFromWishlist(item.productId)}>
+                                        <FontAwesomeIcon icon={faTrashAlt} /> Remove
+                                    </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
-            ) : (
-                <div className="empty-state">Your wishlist is empty.</div>
             )}
-        </section>
+        </div>
     );
 };
 

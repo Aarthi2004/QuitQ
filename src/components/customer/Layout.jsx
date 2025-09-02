@@ -1,7 +1,7 @@
 // src/Layout.js
 
 import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { CustomerServiceContext } from './customer.context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -13,7 +13,7 @@ import {
     faSignOutAlt,
     faSearch,
 } from '@fortawesome/free-solid-svg-icons';
-import './dashboard/CustomerDashboard.css';
+import './Layout.css'; // <-- UPDATED CSS IMPORT
 
 const Layout = ({ children }) => {
     const navigate = useNavigate();
@@ -31,10 +31,12 @@ const Layout = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchCartCount();
-        const updateCart = () => fetchCartCount();
-        window.addEventListener('cartUpdated', updateCart);
-        return () => window.removeEventListener('cartUpdated', updateCart);
+        if (customerService) {
+            fetchCartCount();
+            const updateCart = () => fetchCartCount();
+            window.addEventListener('cartUpdated', updateCart);
+            return () => window.removeEventListener('cartUpdated', updateCart);
+        }
     }, [customerService]);
 
     const handleSearchSubmit = (e) => {
@@ -47,54 +49,55 @@ const Layout = ({ children }) => {
     };
 
     const handleLogout = () => {
-        alert('Logging out...');
+        // Clear local storage or any other session info here if needed
+        localStorage.clear(); 
         navigate('/login');
     };
 
     return (
         <div className="main-app-container">
             <header className="main-header">
-                <Link to="/customer/" className="brand-title">
+                <NavLink to="/customer/" className="brand-title">
                     QuitQ
-                </Link>
+                </NavLink>
 
                 <form className="search-form" onSubmit={handleSearchSubmit}>
                     <input
                         type="text"
-                        placeholder="Search for products, brands and more..."
+                        placeholder="Search for products..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="search-input"
                     />
                     <button type="submit" className="search-button">
-                      
+                        <FontAwesomeIcon icon={faSearch} />
                     </button>
                 </form>
 
                 <nav className="header-nav">
-                    <Link to="/customer/" className="nav-link">
+                    <NavLink to="/customer/" end className="nav-link">
                         <FontAwesomeIcon icon={faStore} className="icon" />
                         <span className="text">Products</span>
-                    </Link>
-                    <Link to="/customer/wishlist" className="nav-link">
+                    </NavLink>
+                    <NavLink to="/customer/wishlist" className="nav-link">
                         <FontAwesomeIcon icon={faHeart} className="icon" />
                         <span className="text">Wishlist</span>
-                    </Link>
-                    <Link to="/customer/orders" className="nav-link">
+                    </NavLink>
+                    <NavLink to="/customer/orders" className="nav-link">
                         <FontAwesomeIcon icon={faBox} className="icon" />
                         <span className="text">Orders</span>
-                    </Link>
-                    <Link to="/customer/account" className="nav-link">
+                    </NavLink>
+                    <NavLink to="/customer/account" className="nav-link">
                         <FontAwesomeIcon icon={faUserCircle} className="icon" />
                         <span className="text">Account</span>
-                    </Link>
-                    <Link to="/customer/cart" className="nav-link cart-link">
+                    </NavLink>
+                    <NavLink to="/customer/cart" className="nav-link cart-link">
                         <FontAwesomeIcon icon={faShoppingCart} className="icon" />
                         <span className="text">My Cart</span>
                         {cartItemCount > 0 && (
                             <span className="cart-badge">{cartItemCount}</span>
                         )}
-                    </Link>
+                    </NavLink>
                     <button className="logout-button" onClick={handleLogout}>
                         <FontAwesomeIcon icon={faSignOutAlt} className="icon" />
                         <span className="text">Logout</span>

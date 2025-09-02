@@ -9,7 +9,7 @@ const ManageProducts = () => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
-    const [stores, setStores] = useState([]); // This will hold only the seller's stores
+    const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
@@ -24,24 +24,18 @@ const ManageProducts = () => {
         try {
             setLoading(true);
             
-            // Step 1: Get all stores that belong to the logged-in seller
             const userStoresRes = await sellerService.getUserStores(sellerId);
             const userStores = userStoresRes.data || [];
             setStores(userStores);
 
-            // Step 2: If the seller has stores, fetch products for each of them
             if (userStores.length > 0) {
-                // This creates an array of promises, one for each store
                 const productPromises = userStores.map(store => sellerService.getProductsByStore(store.storeId));
-                // This runs all the promises in parallel
                 const productResponses = await Promise.all(productPromises);
-                // This combines the products from all stores into a single list
                 setProducts(productResponses.flatMap(res => res.data || []));
             } else {
-                setProducts([]); // If the seller has no stores, they have no products
+                setProducts([]);
             }
 
-            // Step 3: Fetch general data needed for the "Add Product" form dropdowns
             const [categoriesRes, brandsRes] = await Promise.all([
                 sellerService.getCategories(),
                 sellerService.getBrands()
@@ -60,22 +54,22 @@ const ManageProducts = () => {
     
     useEffect(() => {
         fetchData();
-    }, [sellerService, sellerId]); // This will re-run if the logged-in user changes
+    }, [sellerService, sellerId]);
 
     const handleFormSubmit = async (formData) => {
         try {
             if (editingProduct) {
                 await sellerService.updateProduct(editingProduct.productId, formData);
-                alert('Product updated successfully!');
+                // Use a custom modal instead of alert for better UX.
             } else {
                 await sellerService.createProduct(formData);
-                alert('Product created successfully!');
+                // Use a custom modal instead of alert for better UX.
             }
             setShowForm(false);
             setEditingProduct(null);
-            fetchData(); // Re-fetch all data to show the new/updated product
+            fetchData();
         } catch (err) {
-            alert('Failed to save product.');
+            // Use a custom modal instead of alert for better UX.
             console.error(err);
         }
     };
@@ -108,24 +102,27 @@ const ManageProducts = () => {
                         editingProduct={editingProduct}
                         categories={categories}
                         brands={brands}
-                        stores={stores} // Pass the seller's specific stores to the form
+                        stores={stores}
+                        sellerService={sellerService}
                     />
                 )}
-                <table className="data-table">
-                    <thead><tr><th>Name</th><th>Store</th><th>Brand</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
-                    <tbody>
-                        {products.map(p => (
-                            <tr key={p.productId}>
-                                <td>{p.productName}</td>
-                                <td>{stores.find(s => s.storeId === p.storeId)?.storeName || 'N/A'}</td>
-                                <td>{brands.find(b => b.brandId === p.brandId)?.brandName || 'N/A'}</td>
-                                <td>${p.price.toFixed(2)}</td>
-                                <td>{p.quantity > 0 ? p.quantity : <span className="status-badge status-cancelled">Out of Stock</span>}</td>
-                                <td><button className="btn btn-secondary btn-sm" onClick={() => handleEdit(p)}>Edit</button></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                {!showForm && (
+                    <table className="data-table">
+                        <thead><tr><th>Name</th><th>Store</th><th>Brand</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            {products.map(p => (
+                                <tr key={p.productId}>
+                                    <td>{p.productName}</td>
+                                    <td>{stores.find(s => s.storeId === p.storeId)?.storeName || 'N/A'}</td>
+                                    <td>{brands.find(b => b.brandId === p.brandId)?.brandName || 'N/A'}</td>
+                                    <td>${p.price.toFixed(2)}</td>
+                                    <td>{p.quantity > 0 ? p.quantity : <span className="status-badge status-cancelled">Out of Stock</span>}</td>
+                                    <td><button className="btn btn-secondary btn-sm" onClick={() => handleEdit(p)}>Edit</button></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     );

@@ -1,91 +1,177 @@
-.main_login_form {
-    height: 100vh;
+.login-page-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #f8f9fa;
+}
+
+/* Left Branding Panel */
+.login-branding-panel {
+    flex: 1;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #007BFF, #6610f2);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-form {
-    background-color: #fff;
-    padding: 30px 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    max-width: 400px;
-    width: 90%;
-    min-width: 280px;
-    display: flex;
-    flex-direction: column;
-}
-
-input[type="text"],
-input[type="password"] {
-    padding: 14px 15px;
-    margin: 10px 0;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: #007BFF;
-    outline: none;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
-}
-
-button[type="submit"] {
-    background-color: #007BFF;
-    color: white;
-    padding: 12px 15px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    margin: 15px 0 10px 0;
-    transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-.btn-link {
-    background-color: royalblue;
-    color: white;
-    padding: 8px 0;
-    width: 100%;
-    border: none;
-    border-radius: 8px;
-    margin: 5px 0;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
+    padding: 40px;
     text-align: center;
 }
 
-.btn-link:hover {
-    background-color: #3a65d8;
+.branding-content {
+    max-width: 450px;
 }
 
-.alert-danger {
-    color: #dc3545;
-    font-size: 14px;
-    margin-top: -8px;
+.branding-content h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.branding-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* Right Form Panel */
+.login-form-panel {
+    flex: 1.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 420px;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-header h2 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #212529;
     margin-bottom: 10px;
 }
 
-.lined {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.form-header p {
+    color: #6c757d;
+    font-size: 1rem;
 }
 
-.loading img {
-    width: 60px;
-    height: 60px;
+/* --- FLOATING LABEL STYLES START HERE --- */
+.form-group {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 1rem;
+    color: #212529;
+    border: none;
+    border-bottom: 2px solid #ced4da;
+    outline: none;
+    background: transparent;
+    transition: border-color 0.3s ease;
+}
+
+.form-label {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    font-size: 1rem;
+    color: #6c757d;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* The magic part: when input is focused or has content, move the label up */
+.form-input:focus ~ .form-label,
+.form-input:not(:placeholder-shown) ~ .form-label {
+    top: -16px;
+    left: 0;
+    font-size: 0.8rem;
+    color: #667eea;
+}
+
+/* Change the bottom border color on focus */
+.form-input:focus {
+    border-bottom-color: #667eea;
+}
+/* --- FLOATING LABEL STYLES END HERE --- */
+
+
+.form-options {
+    text-align: right;
+    margin-bottom: 30px;
+}
+
+.forgot-password-link {
+    color: #667eea;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password-link:hover {
+    color: #764ba2;
+}
+
+.login-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.login-button:disabled {
+    background: #ced4da;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.signup-prompt {
+    margin-top: 30px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.signup-prompt a {
+    color: #667eea;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.signup-prompt a:hover {
+    color: #764ba2;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .login-branding-panel {
+        display: none;
+    }
+    .login-form-panel {
+        flex: 1;
+    }
 }

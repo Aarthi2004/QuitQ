@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     FaBoxes, FaStore, FaTags, FaUsers, FaMapMarkedAlt, 
     FaGenderless, FaClipboardList, FaTruck, FaSignOutAlt 
 } from 'react-icons/fa';
 import './AdminDashboard.css';
 
-// Import the single, pre-configured apiClient instance
-import apiClient from '../../services/axiosConfig.js'; 
+// ✅ Use default instance directly
+import adminService from './admin.service';
 
-// Importing the service class from the same directory
-import AdminDashboardService from './admin.service';
-
-// Importing sub-components for each section
+// Import sub-components
 import ManageUsers from './manage_users/ManageUsers';
 import ManageProducts from './manage_products/ManageProducts';
 import ManageStores from './manage_stores/ManageStores';
@@ -22,20 +19,15 @@ import ManageGenders from './manage_genders/ManageGenders';
 import ManageOrders from './manage_orders/ManageOrders';
 import ManageShippers from './manage_shippers/ManageShippers';
 
-// --- React Component ---
 const AdminDashboard = () => {
     const [stats, setStats] = useState({ users: 0, products: 0, stores: 0, categories: 0, orders: 0, shippers: 0 });
     const [activeSection, setActiveSection] = useState('dashboard');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Creates a single, stable instance of the service using useMemo, passing the shared apiClient.
-    const adminService = useMemo(() => new AdminDashboardService(apiClient), []);
-
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                // Use Promise.allSettled to fetch all data concurrently and safely handle failures.
                 const [
                     usersResponse,
                     productsResponse,
@@ -70,42 +62,27 @@ const AdminDashboard = () => {
         };
 
         fetchStats();
-    }, [adminService]);
-    
-    // Handle the logout process
+    }, []);
+
     const handleLogout = () => {
-        localStorage.removeItem('authToken'); 
-        window.location.href = '/login'; 
+        localStorage.removeItem('authToken');
+        window.location.href = '/login';
     };
 
     const renderContent = () => {
-        if (loading) {
-            return <div>Loading dashboard...</div>;
-        }
-
-        if (error) {
-            return <div className="error-message">{error}</div>;
-        }
+        if (loading) return <div>Loading dashboard...</div>;
+        if (error) return <div className="error-message">{error}</div>;
 
         switch (activeSection) {
-            case 'users':
-                return <ManageUsers adminService={adminService} />;
-            case 'products':
-                return <ManageProducts adminService={adminService} />;
-             case 'stores':
-                 return <ManageStores adminService={adminService} />;
-            case 'categories':
-                return <ManageCategories adminService={adminService} />;
-            case 'brands':
-                return <ManageBrands adminService={adminService} />;
-            case 'locations':
-                return <ManageLocations adminService={adminService} />;
-            case 'genders':
-                return <ManageGenders adminService={adminService} />;
-            case 'orders':
-                return <ManageOrders adminService={adminService} />;
-            case 'shippers':
-                return <ManageShippers adminService={adminService} />;
+            case 'users': return <ManageUsers adminService={adminService} />;
+            case 'products': return <ManageProducts adminService={adminService} />;
+            case 'stores': return <ManageStores adminService={adminService} />;
+            case 'categories': return <ManageCategories adminService={adminService} />;
+            case 'brands': return <ManageBrands adminService={adminService} />;
+            case 'locations': return <ManageLocations adminService={adminService} />;
+            case 'genders': return <ManageGenders adminService={adminService} />;
+            case 'orders': return <ManageOrders adminService={adminService} />;
+            case 'shippers': return <ManageShippers adminService={adminService} />;
             case 'dashboard':
             default:
                 return (

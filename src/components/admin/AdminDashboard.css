@@ -22,7 +22,7 @@ body {
   min-height: 100vh;
   height: 100vh;
   overflow: hidden;
-  color: var(--text-color);
+  /* color: var(--text-color);  This is not needed here and can be removed */
 }
 
 .sidebar {
@@ -49,7 +49,8 @@ body {
   margin: 0;
 }
 
-.sidebar nav ul li {
+/* --- START: CORRECTED SIDEBAR STYLES --- */
+.admin-dashboard .sidebar nav ul li {
   display: flex;
   align-items: center;
   padding: 1rem 1.2rem;
@@ -57,23 +58,25 @@ body {
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  color: #f5f5f5;
 }
 
-.sidebar nav ul li:hover {
+.admin-dashboard .sidebar nav ul li:hover {
   background-color: #383a54;
   color: #ffffff;
 }
 
-.sidebar nav ul li.active {
+.admin-dashboard .sidebar nav ul li.active {
   background-color: var(--accent-blue);
   color: #ffffff;
   font-weight: bold;
 }
 
-.sidebar nav ul li svg {
+.admin-dashboard .sidebar nav ul li svg {
   margin-right: 1rem;
   font-size: 1.2rem;
 }
+/* --- END: CORRECTED SIDEBAR STYLES --- */
 
 .main-content {
   flex-grow: 1;
@@ -131,14 +134,20 @@ body {
   color: var(--accent-blue);
 }
 
-.stat-card:nth-child(2) .icon { color: var(--accent-green); }
-.stat-card:nth-child(3) .icon { color: var(--accent-yellow); }
-.stat-card:nth-child(4) .icon { color: var(--accent-red); }
+.stat-card:nth-child(2) .icon {
+  color: var(--accent-green);
+}
+.stat-card:nth-child(3) .icon {
+  color: var(--accent-yellow);
+}
+.stat-card:nth-child(4) .icon {
+  color: var(--accent-red);
+}
 
 .stat-card h3 {
   margin: 0 0 0.5rem;
   font-size: 1.2rem;
-  color: var(--text-color);
+  color: #fff;
 }
 
 .stat-card p {
@@ -154,7 +163,8 @@ body {
   margin-top: 1rem;
 }
 
-.management-table th, .management-table td {
+.management-table th,
+.management-table td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
@@ -189,18 +199,22 @@ body {
   background-color: var(--accent-blue);
   color: white;
 }
-.edit-btn:hover { background-color: #0056b3; }
+.edit-btn:hover {
+  background-color: #0056b3;
+}
 
 .delete-btn {
   background-color: var(--accent-red);
   color: white;
 }
-.delete-btn:hover { background-color: #c82333; }
+.delete-btn:hover {
+  background-color: #c82333;
+}
 
 .logout-section {
   padding: 20px;
-  border-top: 1px solid #444; 
-  margin-top: auto; 
+  border-top: 1px solid #444;
+  margin-top: auto;
 }
 
 .logout-btn {
@@ -243,6 +257,8 @@ body {
   margin-bottom: 2rem;
 }
 
+
+/* Adjusted the heading spacing and color */
 .manage-form-container h3 {
   margin-top: 0;
   font-size: 1.5rem;
@@ -252,45 +268,101 @@ body {
   margin-bottom: 1rem;
 }
 
+
+/* Form now uses flex-wrap and gap for better layout */
 .manage-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: flex-end;
 }
 
+/* Common styles for input, select, textarea for consistency */
 .manage-form input,
-.manage-form select {
-  flex: 1;
+.manage-form select,
+.manage-form textarea {
+  font-family: inherit;
+  flex: 1 1 100%;
   padding: 10px;
   border: 1px solid #ced4da;
   border-radius: 4px;
   font-size: 1em;
   color: #495057;
+  resize: none;
+  margin-top: 0.5rem;
+  background: #f8f9fa;
+  box-sizing: border-box;
 }
 
+/* Seller ID input smaller width but flexible */
+.manage-form input[type="number"] {
+  flex: 0 0 150px;
+  max-width: 150px;
+}
+
+/* Group description textarea and seller ID input side by side */
+.form-row {
+  display: flex;
+  flex: 1 1 100%;
+  gap: 1rem;
+  align-items: stretch;
+  margin-top: 0.5rem;
+}
+
+/* Description textarea grows to fill available space */
+.form-row textarea {
+  flex: 1 1 0;
+  min-height: 44px;
+  max-height: 44px;
+}
+
+/* Add button styles improved */
 .manage-form button.add-btn {
-  background-color: var(--accent-green);
+  margin-top: 1rem;
+  background: linear-gradient(90deg, #28a745 0%, #218838 100%);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
+  padding: 12px 28px;
+  border-radius: 6px;
   font-size: 1em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 4px 14px rgba(40,167,69,0.10);
+  transition: background 0.3s, transform 0.1s;
+  align-self: flex-start;
 }
 
 .manage-form button.add-btn:hover {
-  background-color: #218838;
+  background: linear-gradient(90deg, #218838 0%, #28a745 100%);
+  transform: translateY(-2px) scale(1.03);
 }
 
+/* File input spacing */
+.manage-form input[type="file"] {
+  margin-top: 0.5rem;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .manage-form {
     flex-direction: column;
   }
+
   .manage-form input,
   .manage-form select,
-  .manage-form button {
+  .manage-form button,
+  .form-row {
     width: 100%;
+    flex: 1 1 100%;
     margin-top: 0.5rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .manage-form input[type="number"] {
+    max-width: 100%;
+    flex: 1 1 100%;
   }
 }

@@ -1,113 +1,119 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { loginAPICall } from "./login.service";
-import { LoginModel } from "./login.model";
-import { LoginErrorModel } from "./loginerror.model";
-import "./Login.css";
+import { loginAPICall } from './login.service';
+import './Login.css';
 
 const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const [user, setUser] = useState(new LoginModel());
-    const [errors, setErrors] = useState(new LoginErrorModel());
+    const [credentials, setCredentials] = useState({ username: '', password: '' });
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setUser((prev) => ({ ...prev, [name]: value }));
-
-        if (name === "username" && value.trim() === "") {
-            setErrors((prev) => ({ ...prev, username: "Username cannot be empty" }));
-        } else {
-            setErrors((prev) => ({ ...prev, [name]: "" }));
-        }
+        setCredentials((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleLogin = (e) => {
         e.preventDefault();
-        if (errors.username.length > 0) return;
+        if (!credentials.username || !credentials.password) {
+            toast.error('Username and password are required.');
+            return;
+        }
 
         setIsLoading(true);
-        loginAPICall(user)
+        loginAPICall(credentials)
             .then((response) => {
-                setIsLoading(false);
                 const data = response.data;
-
-                // Check if the response from the backend includes the userId
                 if (data && data.token && data.role && data.userId) {
-                    localStorage.setItem("authToken", data.token); 
-                    localStorage.setItem("username", data.username);
-                    localStorage.setItem("role", data.role);
-                    
-                    // --- THIS IS THE NEW, REQUIRED LINE ---
-                    localStorage.setItem("userId", data.userId); 
-                    // ------------------------------------
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('username', data.username);
+                    localStorage.setItem('role', data.role);
+                    localStorage.setItem('userId', data.userId);
+                    toast.success('Login successful! Redirecting...');
 
-                    toast.success("Login successful");
+                    setTimeout(() => {
+                        if (data.role === 'Admin') navigate('/admin-dashboard');
+                        else if (data.role === 'Seller') navigate('/seller-dashboard');
+                        else if (data.role === 'Customer') navigate('/customer');
+                        else navigate('/');
+                    }, 1500);
 
-                    if (data.role === "Seller") {
-                        navigate("/seller-dashboard");
-                    } else if (data.role === "Admin") {
-                        navigate("/admin-dashboard");
-                    } else if (data.role === "Customer") {
-                        // Your App.js uses "/customer/*", so navigating to the base path is correct.
-                        navigate("/customer");
-                    } else {
-                        navigate("/");
-                    }
                 } else {
-                    toast.error("Invalid credentials or user data from server is incomplete.");
+                    throw new Error('Invalid server response.');
                 }
             })
             .catch((error) => {
+                const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
+                toast.error(errorMessage);
+            })
+            .finally(() => {
                 setIsLoading(false);
-                toast.error("Login failed");
-                console.error(error);
             });
     };
 
     return (
-        <div className="main_login_form">
-            {isLoading ? (
-                <div className="loading">
-                    <img src="Images/loading.png" alt="Loading" />
+        <div className="login-page-container">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+            
+            <div className="login-branding-panel">
+                <div className="branding-content">
+                    <h1>Welcome Back to QuitQ</h1>
+                    <p>Your ultimate destination for seamless shopping. Log in to continue.</p>
                 </div>
-            ) : (
-                <form onSubmit={handleLogin}>
-                    <input
-                        name="username"
-                        value={user.username}
-                        onChange={handleChange}
-                        type="text"
-                        placeholder="username"
-                        autoComplete="username"
-                    />
-                    {errors.username?.length > 0 && (
-                        <span className="alert alert-danger">{errors.username}</span>
-                    )}
-                    <input
-                        name="password"
-                        value={user.password}
-                        onChange={handleChange}
-                        type="password"
-                        placeholder="password"
-                        autoComplete="current-password"
-                    />
-                    <button type="submit">Log In!</button>
-                    <div className="lined">
-                        <div>New User?</div>
-                        <Link to="/register">
-                            <button type="button" className="btn-link">Register</button>
-                        </Link>
-                        <div>Forgot Password?</div>
-                        <Link to="/resetpassword">
-                            <button type="button" className="btn-link">Forgot password</button>
-                        </Link>
+            </div>
+
+            <div className="login-form-panel">
+                <div className="form-container">
+                    <div className="form-header">
+                        <h2>Sign In</h2>
+                        <p>Welcome back! Please enter your details.</p>
                     </div>
-                </form>
-            )}
-            <ToastContainer />
+                    
+                    <form onSubmit={handleLogin}>
+                        <div className="form-group">
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                className="form-input"
+                                value={credentials.username}
+                                onChange={handleChange}
+                                placeholder=" " /* Must have a placeholder for the animation to work */
+                                required
+                            />
+                            <label htmlFor="username" className="form-label">Username</label>
+                        </div>
+                        
+                        <div className="form-group">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                className="form-input"
+                                value={credentials.password}
+                                onChange={handleChange}
+                                placeholder=" " /* Must have a placeholder for the animation to work */
+                                required
+                            />
+                            <label htmlFor="password" className="form-label">Password</label>
+                        </div>
+                        
+                        <div className="form-options">
+                            <Link to="/reset-password" className="forgot-password-link">Forgot Password?</Link>
+                        </div>
+                        
+                        <button type="submit" className="login-button" disabled={isLoading}>
+                            {isLoading ? 'Signing In...' : 'Sign In'}
+                        </button>
+                    </form>
+                    
+                    <div className="signup-prompt">
+                        <p>Don't have an account? <Link to="/register">Sign Up</Link></p>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
