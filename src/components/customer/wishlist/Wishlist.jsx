@@ -6,7 +6,7 @@ import { CustomerServiceContext } from '../customer.context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faCartPlus } from '@fortawesome/free-solid-svg-icons';
 
-const BACKEND_BASE_URL = 'http://localhost:5193';
+const BACKEND_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Wishlist = () => {
     const customerService = useContext(CustomerServiceContext);

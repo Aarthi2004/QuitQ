@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faCartPlus, faHeart, faTag, faFilter, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-const BACKEND_BASE_URL = 'http://localhost:5193';
+const BACKEND_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 // Toast and ProductCard components remain the same...
 const Toast = ({ message, type = 'success', onClose }) => {

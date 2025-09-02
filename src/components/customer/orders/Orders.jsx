@@ -4,7 +4,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import './Orders.css'; // Your dedicated CSS file
 import { CustomerServiceContext } from '../customer.context';
 
-const BACKEND_BASE_URL = 'http://localhost:5193';
+const BACKEND_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Orders = () => {
     const customerService = useContext(CustomerServiceContext);
